@@ -8,6 +8,7 @@ import (
 	"github.com/krishnalagad/golang-react-calorie-tracker/routes"
 )
 
+// main function.
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
