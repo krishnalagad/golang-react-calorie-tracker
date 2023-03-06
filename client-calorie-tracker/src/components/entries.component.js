@@ -48,6 +48,7 @@ const Entries = () => {
           ))}
       </Container>
 
+      {/* Popup to add entry in db.*/}
       <Modal show={addNewEntry} onHide={() => setAddNewEntry(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Add Calorie Entry</Modal.Title>
@@ -81,6 +82,7 @@ const Entries = () => {
               onChange={(event) => {
                 newEntry.fat = event.target.value;
               }}
+              type="number"
             ></Form.Control>
 
             <Button onClick={() => addSingleEntry()}>Add</Button>
@@ -88,8 +90,112 @@ const Entries = () => {
           </Form.Group>
         </Modal.Body>
       </Modal>
+
+      {/* Popup to update entry in db. */}
+      <Modal
+        show={changeIngredient.change}
+        onHide={() => setChangeIngredient({ change: false, id: 0 })}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Change Ingredient</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>New Ingredients</Form.Label>
+            <Form.Control
+              onChange={(event) => {
+                setNewIngredientName(event.target.value);
+              }}
+            ></Form.Control>
+
+            <Button onClick={() => changeIngredientForEntry}>Change</Button>
+            <Button
+              onClick={() => setChangeIngredient({ change: false, id: 0 })}
+            >
+              Cancel
+            </Button>
+          </Form.Group>
+        </Modal.Body>
+      </Modal>
+
+      {/*  */}
+      <Modal
+        show={changeEntry.change}
+        onHide={() => setChangeEntry({ change: false, id: 0 })}
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title></Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Dish</Form.Label>
+            <Form.Control
+              onChange={(event) => {
+                newEntry.dish = event.target.value;
+              }}
+            ></Form.Control>
+
+            <Form.Label>Ingredients</Form.Label>
+            <Form.Control
+              onChange={(event) => {
+                newEntry.ingredients = event.target.value;
+              }}
+            ></Form.Control>
+
+            <Form.Label>Calories</Form.Label>
+            <Form.Control
+              onChange={(event) => {
+                newEntry.calories = event.target.value;
+              }}
+            ></Form.Control>
+
+            <Form.Label>Fats</Form.Label>
+            <Form.Control
+              onChange={(event) => {
+                newEntry.fat = event.target.value;
+              }}
+              type="number"
+            ></Form.Control>
+
+            <Button onClick={() => changeSingleEntry}>Change</Button>
+            <Button onClick={() => setChangeEntry({ change: false, id: 0 })}>
+              Cancel
+            </Button>
+          </Form.Group>
+        </Modal.Body>
+      </Modal>
     </div>
   );
+
+  function changeIngredientForEntry() {
+    changeIngredient.change = false;
+    var url =
+      "http://localhost:4000/api/update/ingradient/" + changeIngredient.id;
+    axios
+      .put(url, {
+        ingredients: newIngredientName,
+      })
+      .then((response) => {
+        console.log(response.status);
+        if (response.status === 200) {
+          setRefreshData(true);
+        }
+      });
+  }
+
+  function changeSingleEntry() {
+    changeEntry.change = false;
+    var url = "http://localhost:4000/api/entry" + changeEntry.id;
+    axios.put(url, newEntry).then((response) => {
+      if (response.status == 200) {
+        setRefreshData(true);
+      }
+    });
+  }
 
   function addSingleEntry() {
     setAddNewEntry(false);
@@ -130,3 +236,5 @@ const Entries = () => {
       });
   }
 };
+
+export default Entries;
